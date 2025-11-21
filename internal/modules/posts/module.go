@@ -17,7 +17,6 @@ func (m *PostsModule) Name() string {
 }
 
 func (m *PostsModule) RegisterRoutes(router *gin.RouterGroup) {
-	router.GET("/", m.listPostsHandler)
-
+	router.GET("", m.listPostsHandler)
 	router.GET("/:slug", m.getPostHandler)
 }
