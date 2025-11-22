@@ -24,6 +24,17 @@ func (s *Service) ListPosts() []Post {
 	return posts
 }
 
+func (s *Service) CreatePost(slug, title, content string) (*Post, error) {
+	// Placeholder implementation
+	post := &Post{
+		ID:      "3", // In real implementation, this would be generated
+		Slug:    slug,
+		Title:   title,
+		Content: content,
+	}
+	return post, nil
+}
+
 func (s *Service) GetPostBySlug(slug string) *Post {
 	// Placeholder implementation
 	if slug == "first-post" {
@@ -31,5 +42,10 @@ func (s *Service) GetPostBySlug(slug string) *Post {
 	} else if slug == "second-post" {
 		return &Post{ID: "2", Slug: "second-post", Title: "Second Post", Content: "This is the content of the second post."}
 	}
+	return nil
+}
+
+func (s *Service) DeletePostBySlug(slug string) error {
+	// Placeholder implementation
 	return nil
 }

@@ -1,0 +1,78 @@
+@startuml
+
+title ThynGo Modules - MongoDB
+
+
+database "thyngo" as thyngo{
+}
+
+entity "media" as media <<table>> {
+  _id : ObjectId
+  --
+  id : String
+  slug : String
+  title : String
+  type : String
+  created_at : Datetime
+  updated_at : Datetime
+}
+
+entity "posts" as posts <<table>> {
+  _id : ObjectId
+  --
+  id : String
+  slug : String
+  title : String
+  content : Embedded document
+  created_at : Datetime
+  updated_at : Datetime
+}
+
+entity "projects" as projects <<table>> {
+  _id : ObjectId
+  --
+  id : String
+  slug : String
+  title : String
+  content : Embedded document
+  created_at : Datetime
+  updated_at : Datetime
+}
+
+entity "resume" as resume <<table>> {
+  _id : ObjectId
+  --
+  id : String
+  name : String
+  email : String
+  phone : String
+  job : String
+  github : String
+  linkedin : String
+  website : String
+  experience : Embedded document
+  education : Embedded document
+  skills : Embedded document
+  created_at : Datetime
+  updated_at : Datetime
+}
+
+entity "users" as users <<table>> {
+  _id : ObjectId
+  --
+  id : String
+  username : String
+  email : String
+  role : String
+  created_at : Datetime
+  updated_at : Datetime
+}
+
+
+thyngo --> media
+thyngo --> projects
+thyngo --> posts
+thyngo --> resume
+thyngo --> users
+
+@enduml

@@ -3,21 +3,25 @@ package main
 import (
 	"log"
 	"os"
-	postsModule "thyngo/internal/modules/posts"
 
-	"thyngo/internal/app"
+	//mediaModule "thyngo/internal/modules/media"
+	postsModule "thyngo/internal/modules/posts"
 	//projetsModule "thyngo/internal/modules/projects"
 	//resumeModule "thyngo/internal/modules/resume"
+	//usersModule "thyngo/internal/modules/users"
+
+	"thyngo/internal/app"
 )
 
 func main() {
 	a := app.NewApp()
 
 	// Register modules
-	//a.RegisterModule(projetsModule.New())
+	//a.RegisterModule(mediaModule.New())
 	a.RegisterModule(postsModule.New())
 	//a.RegisterModule(resumeModule.New())
-	//a.RegisterModule(mediaModule.New())
+	//a.RegisterModule(projetsModule.New())
+	//a.RegisterModule(usersModule.New())
 
 	a.SetupRoutes()
 
