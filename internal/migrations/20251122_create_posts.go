@@ -14,6 +14,7 @@ import (
 func init() {
 	database.Register(database.Migration{
 		ID:          "20251122_create_posts",
+		Module:      "posts",
 		Description: "Create posts collection: unique index on slug and seed two posts",
 		Up: func(ctx context.Context, db *mongo.Database) error {
 			coll := db.Collection("posts")

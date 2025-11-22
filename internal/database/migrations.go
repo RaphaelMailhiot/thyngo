@@ -11,6 +11,7 @@ import (
 
 type Migration struct {
 	ID          string
+	Module      string
 	Description string
 	Up          func(ctx context.Context, db *mongo.Database) error
 }
@@ -23,9 +24,17 @@ func Register(m Migration) {
 
 // Run applique toutes les migrations non encore appliquées.
 // La collection `migrations` contient des documents avec `_id` = migration ID.
-func Run(ctx context.Context, db *mongo.Database) error {
+// Si enabledModules est vide, toutes les migrations sont considérées autorisées.
+func Run(ctx context.Context, db *mongo.Database, enabledModules []string) error {
 	if db == nil {
 		return fmt.Errorf("database is nil")
+	}
+
+	// Construire un set des modules autorisés
+	allowAll := len(enabledModules) == 0
+	allowed := map[string]bool{}
+	for _, m := range enabledModules {
+		allowed[m] = true
 	}
 
 	col := db.Collection("migrations")
@@ -51,6 +60,10 @@ func Run(ctx context.Context, db *mongo.Database) error {
 
 	// Applique les migrations dans l'ordre d'enregistrement
 	for _, m := range registry {
+		// Filtrer par module si nécessaire
+		if !allowAll && m.Module != "" && !allowed[m.Module] {
+			continue
+		}
 		if applied[m.ID] {
 			continue
 		}
