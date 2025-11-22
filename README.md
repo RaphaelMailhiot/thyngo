@@ -58,6 +58,14 @@ go run ./cmd/api
 
 L’API sera accessible à l’adresse suivante : `http://localhost:8080`
 
+## 🗃️ Migrations de la base de données
+
+Migrer les schémas de la base de données MongoDB :
+
+```sh
+go run ./cmd/migrate
+```
+
 ## 🧪 Exécuter les tests
 
 Lancer tous les tests unitaires du projet :
