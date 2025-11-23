@@ -3,7 +3,7 @@ package posts
 import "github.com/gin-gonic/gin"
 
 type PostsModule struct {
-	service *Service
+	service PostStore
 }
 
 func New() *PostsModule {

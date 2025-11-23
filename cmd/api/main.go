@@ -18,9 +18,9 @@ import (
 
 func main() {
 	// Connect to MongoDB
-	if err := database.Connect(context.Background()); err != nil {
+	/*if err := database.Connect(context.Background()); err != nil {
 		log.Fatalf("failed to connect to mongo: %v", err)
-	}
+	}*/
 	// Close connection when main function ends
 	defer func() {
 		_ = database.Close(context.Background())
@@ -48,6 +48,9 @@ func main() {
 		a.RegisterModule(usersModule.New())
 	}
 
+	for _, m := range a.Modules {
+		log.Printf("Registered module: %s", m.Name())
+	}
 	a.SetupRoutes()
 
 	port := os.Getenv("PORT")
