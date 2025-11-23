@@ -20,5 +20,6 @@ func (m *PostsModule) RegisterRoutes(router *gin.RouterGroup) {
 	router.GET("", m.listPostsHandler)
 	router.POST("", m.createPostsHandler)
 	router.GET("/:slug", m.getPostHandler)
+	router.PUT("/:slug", m.updatePostHandler)
 	router.DELETE("/:slug", m.deletePostHandler)
 }

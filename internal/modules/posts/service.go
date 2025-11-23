@@ -45,6 +45,17 @@ func (s *Service) GetPostBySlug(slug string) *Post {
 	return nil
 }
 
+func (s *Service) UpdatePostBySlug(slug, title, content string) (*Post, error) {
+	// Placeholder implementation
+	post := &Post{
+		ID:      "1", // In real implementation, this would be fetched based on slug
+		Slug:    slug,
+		Title:   title,
+		Content: content,
+	}
+	return post, nil
+}
+
 func (s *Service) DeletePostBySlug(slug string) error {
 	// Placeholder implementation
 	return nil
