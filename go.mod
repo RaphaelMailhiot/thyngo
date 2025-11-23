@@ -2,7 +2,10 @@ module thyngo
 
 go 1.25.4
 
-require github.com/gin-gonic/gin v1.11.0
+require (
+	github.com/gin-gonic/gin v1.11.0
+	go.mongodb.org/mongo-driver v1.17.6
+)
 
 require (
 	github.com/bytedance/gopkg v0.1.3 // indirect
@@ -17,7 +20,6 @@ require (
 	github.com/goccy/go-json v0.10.5 // indirect
 	github.com/goccy/go-yaml v1.18.0 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
-	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/compress v1.16.7 // indirect
 	github.com/klauspost/cpuid/v2 v2.3.0 // indirect
@@ -35,7 +37,6 @@ require (
 	github.com/xdg-go/scram v1.1.2 // indirect
 	github.com/xdg-go/stringprep v1.0.4 // indirect
 	github.com/youmark/pkcs8 v0.0.0-20240726163527-a2c0da244d78 // indirect
-	go.mongodb.org/mongo-driver v1.17.6 // indirect
 	go.uber.org/mock v0.6.0 // indirect
 	golang.org/x/arch v0.23.0 // indirect
 	golang.org/x/crypto v0.45.0 // indirect

@@ -18,9 +18,9 @@ import (
 
 func main() {
 	// Connect to MongoDB
-	/*if err := database.Connect(context.Background()); err != nil {
+	if err := database.Connect(context.Background()); err != nil {
 		log.Fatalf("failed to connect to mongo: %v", err)
-	}*/
+	}
 	// Close connection when main function ends
 	defer func() {
 		_ = database.Close(context.Background())
