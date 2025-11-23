@@ -100,8 +100,15 @@ func (m *PostsModule) updatePostHandler(c *gin.Context) {
 
 func (m *PostsModule) deletePostHandler(c *gin.Context) {
 	slug := c.Param("slug")
-	post := m.service.DeletePostBySlug(slug)
-	if post == nil {
+	deleted, err := m.service.DeletePostBySlug(slug)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"success": false,
+			"error":   err.Error(),
+		})
+		return
+	}
+	if !deleted {
 		c.JSON(http.StatusNotFound, gin.H{
 			"success": false,
 			"error":   "Post not found",
@@ -111,6 +118,6 @@ func (m *PostsModule) deletePostHandler(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
-		"message": "Post with slug " + slug + " deleted (not really, this is a placeholder).",
+		"message": "Post with slug " + slug + " deleted.",
 	})
 }

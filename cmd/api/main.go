@@ -1,27 +1,52 @@
 package main
 
 import (
+	"context"
 	"log"
 	"os"
+	"thyngo/internal/config"
+	"thyngo/internal/database"
 
-	//mediaModule "thyngo/internal/modules/media"
+	mediaModule "thyngo/internal/modules/media"
 	postsModule "thyngo/internal/modules/posts"
-	//projetsModule "thyngo/internal/modules/projects"
-	//resumeModule "thyngo/internal/modules/resume"
-	//usersModule "thyngo/internal/modules/users"
+	projetsModule "thyngo/internal/modules/projects"
+	resumeModule "thyngo/internal/modules/resume"
+	usersModule "thyngo/internal/modules/users"
 
 	"thyngo/internal/app"
 )
 
 func main() {
+	// Connect to MongoDB
+	if err := database.Connect(context.Background()); err != nil {
+		log.Fatalf("failed to connect to mongo: %v", err)
+	}
+	// Close connection when main function ends
+	defer func() {
+		_ = database.Close(context.Background())
+	}()
+
+	// Load feature flags / module toggles
+	cfg := config.Load()
+
 	a := app.NewApp()
 
-	// Register modules
-	//a.RegisterModule(mediaModule.New())
-	a.RegisterModule(postsModule.New())
-	//a.RegisterModule(resumeModule.New())
-	//a.RegisterModule(projetsModule.New())
-	//a.RegisterModule(usersModule.New())
+	// Register modules conditionnellement
+	if cfg.EnableMedia {
+		a.RegisterModule(mediaModule.New())
+	}
+	if cfg.EnablePosts {
+		a.RegisterModule(postsModule.New())
+	}
+	if cfg.EnableProjects {
+		a.RegisterModule(projetsModule.New())
+	}
+	if cfg.EnableResume {
+		a.RegisterModule(resumeModule.New())
+	}
+	if cfg.EnableUsers {
+		a.RegisterModule(usersModule.New())
+	}
 
 	a.SetupRoutes()
 

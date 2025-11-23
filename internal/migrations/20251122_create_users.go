@@ -15,28 +15,34 @@ func init() {
 	database.Register(database.Migration{
 		ID:          "20251122_create_users",
 		Module:      "users",
-		Description: "Create users collection: unique index on email and seed two users",
+		Description: "Create users collection: unique index on email and username and seed two users",
 		Up: func(ctx context.Context, db *mongo.Database) error {
 			coll := db.Collection("users")
 
-			// crée un index unique sur email
-			indexModel := mongo.IndexModel{
-				Keys:    bson.D{{Key: "email", Value: 1}},
-				Options: options.Index().SetUnique(true),
+			// crée des index uniques sur email et username
+			indexModels := []mongo.IndexModel{
+				{
+					Keys:    bson.D{{Key: "email", Value: 1}},
+					Options: options.Index().SetUnique(true),
+				},
+				{
+					Keys:    bson.D{{Key: "username", Value: 1}},
+					Options: options.Index().SetUnique(true),
+				},
 			}
-			if _, err := coll.Indexes().CreateOne(ctx, indexModel); err != nil {
+			if _, err := coll.Indexes().CreateMany(ctx, indexModels); err != nil {
 				return err
 			}
 
 			// utilisateurs
 			users := []struct {
-				ID    string
-				Email string
-				Name  string
-				Role  string
+				ID       string
+				Username string
+				Email    string
+				Role     string
 			}{
-				{ID: "1", Email: "admin@example.com", Name: "Admin", Role: "admin"},
-				{ID: "2", Email: "user1@example.com", Name: "User One", Role: "user"},
+				{ID: "1", Username: "Admin", Email: "admin@example.com", Role: "admin"},
+				{ID: "2", Username: "User One", Email: "user1@example.com", Role: "user"},
 			}
 
 			for _, u := range users {
@@ -45,8 +51,8 @@ func init() {
 					bson.M{"email": u.Email},
 					bson.M{"$setOnInsert": bson.M{
 						"id":         u.ID,
+						"username":   u.Username,
 						"email":      u.Email,
-						"name":       u.Name,
 						"role":       u.Role,
 						"created_at": time.Now(),
 					}},
