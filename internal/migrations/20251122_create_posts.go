@@ -32,10 +32,50 @@ func init() {
 			posts := []struct {
 				Slug    string
 				Title   string
-				Content string
+				Content bson.A
 			}{
-				{Slug: "first-post", Title: "First Post", Content: "This is the content of the first post."},
-				{Slug: "second-post", Title: "Second Post", Content: "This is the content of the second post."},
+				{
+					Slug:  "example-post",
+					Title: "Exemple de post avec images et paragraphes",
+					Content: bson.A{
+						bson.M{
+							"type": "img",
+							"content": bson.M{
+								"url":   "https://cdn.example.com/img1.jpg",
+								"title": "Première image",
+							},
+						},
+						bson.M{
+							"type":    "p",
+							"content": "Ceci est le premier paragraphe du post. Il introduit le sujet.",
+						},
+						bson.M{
+							"type":    "h2",
+							"content": "Titre secondaire du post",
+						},
+						bson.M{
+							"type": "img",
+							"content": bson.M{
+								"url":   "https://cdn.example.com/img2.jpg",
+								"title": "Deuxième image",
+							},
+						},
+						bson.M{
+							"type":    "p",
+							"content": "Ceci est le deuxième paragraphe, qui conclut ou développe davantage.",
+						},
+					},
+				},
+				{
+					Slug:  "second-post",
+					Title: "Second Post",
+					Content: bson.A{
+						bson.M{
+							"type":    "p",
+							"content": "This is the content of the second post.",
+						},
+					},
+				},
 			}
 
 			for _, p := range posts {

@@ -63,11 +63,85 @@ entity "users" as users <<table>> {
   updated_at : Datetime
 }
 
+entity "contents" as contents <<table>> {
+  _id : ObjectId
+  --
+  type : String
+  content : Enbedded document
+  created_at : Datetime
+  updated_at : Datetime
+}
+
+entity "images" as images <<table>> {
+  _id : ObjectId
+  --
+  type : String
+  url : String
+  title : String
+  created_at : Datetime
+  updated_at : Datetime
+}
+
+entity "texts" as texts <<table>> {
+  _id : ObjectId
+  --
+  type : String
+  content : String
+  created_at : Datetime
+  updated_at : Datetime
+}
+
+entity "experiences" as experiences <<table>> {
+  _id : ObjectId
+  --
+  job_title : String
+  job_type : String
+  company : String
+  started_date : Datetime
+  ended_date : Datetime
+  location : String
+  location_type : String
+  description : String
+  created_at : Datetime
+  updated_at : Datetime
+}
+
+entity "educations" as educations <<table>> {
+  _id : ObjectId
+  --
+  school : String
+  diploma : String
+  study_field : String
+  started_date : Datetime
+  ended_date : Datetime
+  description : String
+  created_at : Datetime
+  updated_at : Datetime
+}
+
+entity "skills" as skills <<table>> {
+  _id : ObjectId
+  --
+  title : String
+  description : String
+  created_at : Datetime
+  updated_at : Datetime
+}
+
 
 thyngo --> media
 thyngo --> projects
 thyngo --> posts
 thyngo --> resume
 thyngo --> users
+
+projects --> contents
+posts --> contents
+contents --> images
+contents --> texts
+
+resume --> experiences
+resume --> educations
+resume --> skills
 
 @enduml
