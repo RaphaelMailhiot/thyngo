@@ -9,7 +9,6 @@ database "thyngo" as thyngo{
 entity "media" as media <<table>> {
   _id : ObjectId
   --
-  id : String
   slug : String
   title : String
   type : String
@@ -20,7 +19,6 @@ entity "media" as media <<table>> {
 entity "posts" as posts <<table>> {
   _id : ObjectId
   --
-  id : String
   slug : String
   title : String
   content : Embedded document
@@ -31,7 +29,6 @@ entity "posts" as posts <<table>> {
 entity "projects" as projects <<table>> {
   _id : ObjectId
   --
-  id : String
   slug : String
   title : String
   content : Embedded document
@@ -42,7 +39,6 @@ entity "projects" as projects <<table>> {
 entity "resume" as resume <<table>> {
   _id : ObjectId
   --
-  id : String
   name : String
   email : String
   phone : String
@@ -60,7 +56,6 @@ entity "resume" as resume <<table>> {
 entity "users" as users <<table>> {
   _id : ObjectId
   --
-  id : String
   username : String
   email : String
   role : String

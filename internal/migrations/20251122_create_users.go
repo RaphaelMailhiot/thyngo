@@ -36,13 +36,12 @@ func init() {
 
 			// utilisateurs
 			users := []struct {
-				ID       string
 				Username string
 				Email    string
 				Role     string
 			}{
-				{ID: "1", Username: "Admin", Email: "admin@example.com", Role: "admin"},
-				{ID: "2", Username: "User One", Email: "user1@example.com", Role: "user"},
+				{Username: "Admin", Email: "admin@example.com", Role: "admin"},
+				{Username: "User One", Email: "user1@example.com", Role: "user"},
 			}
 
 			for _, u := range users {
@@ -50,11 +49,11 @@ func init() {
 					ctx,
 					bson.M{"email": u.Email},
 					bson.M{"$setOnInsert": bson.M{
-						"id":         u.ID,
 						"username":   u.Username,
 						"email":      u.Email,
 						"role":       u.Role,
 						"created_at": time.Now(),
+						"updated_at": time.Now(),
 					}},
 					options.Update().SetUpsert(true),
 				)

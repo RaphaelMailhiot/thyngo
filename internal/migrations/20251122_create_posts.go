@@ -30,13 +30,12 @@ func init() {
 
 			// posts
 			posts := []struct {
-				ID      string
 				Slug    string
 				Title   string
 				Content string
 			}{
-				{ID: "1", Slug: "first-post", Title: "First Post", Content: "This is the content of the first post."},
-				{ID: "2", Slug: "second-post", Title: "Second Post", Content: "This is the content of the second post."},
+				{Slug: "first-post", Title: "First Post", Content: "This is the content of the first post."},
+				{Slug: "second-post", Title: "Second Post", Content: "This is the content of the second post."},
 			}
 
 			for _, p := range posts {
@@ -44,11 +43,11 @@ func init() {
 					ctx,
 					bson.M{"slug": p.Slug},
 					bson.M{"$setOnInsert": bson.M{
-						"id":         p.ID,
 						"slug":       p.Slug,
 						"title":      p.Title,
 						"content":    p.Content,
 						"created_at": time.Now(),
+						"updated_at": time.Now(),
 					}},
 					options.Update().SetUpsert(true),
 				)

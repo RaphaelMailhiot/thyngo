@@ -38,7 +38,7 @@ func main() {
 			}
 		}
 	} else {
-		enabled = []string{"posts"}
+		enabled = []string{"posts", "users"}
 	}
 
 	if err := database.Run(ctx, db, enabled); err != nil {

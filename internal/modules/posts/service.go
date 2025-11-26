@@ -8,13 +8,11 @@ import (
 	"thyngo/internal/database"
 
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type Post struct {
-	ID        string    `json:"id" bson:"id"`
 	Slug      string    `json:"slug" bson:"slug"`
 	Title     string    `json:"title" bson:"title"`
 	Content   string    `json:"content" bson:"content"`
@@ -65,7 +63,6 @@ func (s *Service) CreatePost(slug, title, content string) (*Post, error) {
 	}
 	now := time.Now()
 	post := &Post{
-		ID:        primitive.NewObjectID().Hex(),
 		Slug:      slug,
 		Title:     title,
 		Content:   content,
