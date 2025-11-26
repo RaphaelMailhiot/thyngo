@@ -3,8 +3,6 @@ package posts
 import (
 	"sync"
 	"time"
-
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type InMemoryStore struct {
@@ -27,7 +25,6 @@ func (s *InMemoryStore) ListPosts() []Post {
 func (s *InMemoryStore) CreatePost(slug, title, content string) (*Post, error) {
 	now := time.Now()
 	p := Post{
-		ID:        primitive.NewObjectID().Hex(),
 		Slug:      slug,
 		Title:     title,
 		Content:   content,
