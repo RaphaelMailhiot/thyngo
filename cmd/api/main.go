@@ -10,7 +10,7 @@ import (
 	mediaModule "thyngo/internal/modules/media"
 	postsModule "thyngo/internal/modules/posts"
 	projetsModule "thyngo/internal/modules/projects"
-	resumeModule "thyngo/internal/modules/resumes"
+	resumesModule "thyngo/internal/modules/resumes"
 	usersModule "thyngo/internal/modules/users"
 
 	"thyngo/internal/app"
@@ -41,8 +41,8 @@ func main() {
 	if cfg.EnableProjects {
 		a.RegisterModule(projetsModule.New())
 	}
-	if cfg.EnableResume {
-		a.RegisterModule(resumeModule.New())
+	if cfg.EnableResumes {
+		a.RegisterModule(resumesModule.New())
 	}
 	if cfg.EnableUsers {
 		a.RegisterModule(usersModule.New())

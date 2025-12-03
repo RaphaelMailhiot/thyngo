@@ -27,7 +27,7 @@ func (s *pgStore) ListPosts() []Post {
 	ctx, cancel := context.WithTimeout(context.Background(), s.ctxTimeout)
 	defer cancel()
 
-	pool := database.GetPGPool()
+	pool := database.GetPool()
 	if pool == nil {
 		return nil
 	}
@@ -49,7 +49,7 @@ func (s *pgStore) ListPosts() []Post {
 }
 
 func (s *pgStore) CreatePost(slug, title, content string) (*Post, error) {
-	pool := database.GetPGPool()
+	pool := database.GetPool()
 	if pool == nil {
 		return nil, errors.New("no postgres pool")
 	}
@@ -76,7 +76,7 @@ func (s *pgStore) CreatePost(slug, title, content string) (*Post, error) {
 }
 
 func (s *pgStore) GetPostBySlug(slug string) *Post {
-	pool := database.GetPGPool()
+	pool := database.GetPool()
 	if pool == nil {
 		return nil
 	}
@@ -96,7 +96,7 @@ func (s *pgStore) GetPostBySlug(slug string) *Post {
 }
 
 func (s *pgStore) UpdatePostBySlug(slug, title, content string) (*Post, error) {
-	pool := database.GetPGPool()
+	pool := database.GetPool()
 	if pool == nil {
 		return nil, errors.New("no postgres pool")
 	}
@@ -116,7 +116,7 @@ func (s *pgStore) UpdatePostBySlug(slug, title, content string) (*Post, error) {
 }
 
 func (s *pgStore) DeletePostBySlug(slug string) (bool, error) {
-	pool := database.GetPGPool()
+	pool := database.GetPool()
 	if pool == nil {
 		return false, errors.New("no postgres pool")
 	}

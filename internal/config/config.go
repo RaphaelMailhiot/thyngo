@@ -13,7 +13,7 @@ type Config struct {
 	EnableMedia    bool
 	EnablePosts    bool
 	EnableProjects bool
-	EnableResume   bool
+	EnableResumes  bool
 	EnableUsers    bool
 	MediaRoot      string
 }
@@ -44,7 +44,7 @@ func Load() Config {
 		EnableMedia:    getEnvBool("ENABLE_MEDIA", false),
 		EnablePosts:    getEnvBool("ENABLE_POSTS", false),
 		EnableProjects: getEnvBool("ENABLE_PROJECTS", false),
-		EnableResume:   getEnvBool("ENABLE_RESUME", false),
+		EnableResumes:  getEnvBool("ENABLE_RESUMES", false),
 		EnableUsers:    getEnvBool("ENABLE_USERS", false),
 		MediaRoot:      getEnv("MEDIA_ROOT", "./media"),
 	}

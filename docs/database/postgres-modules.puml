@@ -2,141 +2,149 @@
 
 title ThynGo Modules - PostgreSQL Database Schema
 
-
-database "thyngo" as thyngo{
+database "thyngo" as thyngo {
 }
 
 entity "media" as media <<table>> {
-  id : oid  {auto increment}
-  slug : String
-  title : String
-  type : String {movie, series}
-  created_at : Datetime
-  updated_at : Datetime
+  id : BIGSERIAL «PK»
+  slug : TEXT «unique»
+  title : TEXT
+  type : TEXT «movie, series, other»
+  metadata : JSONB
+  created_at : TIMESTAMPTZ
+  updated_at : TIMESTAMPTZ
 }
 
 entity "posts" as posts <<table>> {
-  id : oid  {auto increment}
-  slug : String
-  title : String
-  content : ContentId
-  created_at : Datetime
-  updated_at : Datetime
+  id : BIGSERIAL «PK»
+  slug : TEXT «unique»
+  title : TEXT
+  content_jsonb : JSONB
+  created_at : TIMESTAMPTZ
+  updated_at : TIMESTAMPTZ
 }
 
 entity "projects" as projects <<table>> {
-  id : oid  {auto increment}
-  slug : String
-  title : String
-  content : ContentId
-  created_at : Datetime
-  updated_at : Datetime
+  id : BIGSERIAL «PK»
+  slug : TEXT «unique»
+  title : TEXT
+  content_jsonb : JSONB
+  created_at : TIMESTAMPTZ
+  updated_at : TIMESTAMPTZ
 }
 
 entity "resumes" as resumes <<table>> {
-  id : oid  {auto increment}
-  name : String
-  email : String
-  phone : String
-  job : String
-  github : String
-  linkedin : String
-  website : String
-  created_at : Datetime
-  updated_at : Datetime
+  id : BIGSERIAL «PK»
+  user_id : BIGINT
+  name : TEXT
+  email : TEXT
+  phone : TEXT
+  job : TEXT
+  github : TEXT
+  linkedin : TEXT
+  website : TEXT
+  created_at : TIMESTAMPTZ
+  updated_at : TIMESTAMPTZ
 }
 
 entity "users" as users <<table>> {
-  id : oid  {auto increment}
-  username : String {unique}
-  email : String {unique}
-  password : String
-  role : String
-  created_at : Datetime
-  updated_at : Datetime
+  id : BIGSERIAL «PK»
+  username : TEXT «unique»
+  email : TEXT «unique»
+  password_hash : TEXT
+  role : TEXT
+  created_at : TIMESTAMPTZ
+  updated_at : TIMESTAMPTZ
 }
 
-entity "blocksContents" as contents <<table>> {
-  id : oid  {auto increment}
-  type : String {ImageBlockId, TitleBlockId, TextBlockId, CodeBlockId, CustomBlockId}
-  order : int
-  created_at : Datetime
-  updated_at : Datetime
+entity "blocks" as contents <<table>> {
+  id : BIGSERIAL «PK»
+  parent_table : TEXT
+  parent_id : BIGINT
+  type : TEXT «image,title,text,code,custom»
+  ord : INT
+  created_at : TIMESTAMPTZ
+  updated_at : TIMESTAMPTZ
 }
 
-entity "imagesBlocks" as images <<table>> {
-  id : oid  {auto increment}
-  type : String
-  url : String
-  title : String
-  created_at : Datetime
-  updated_at : Datetime
+entity "image_blocks" as images <<table>> {
+  id : BIGSERIAL «PK»
+  block_id : BIGINT
+  url : TEXT
+  title : TEXT
+  created_at : TIMESTAMPTZ
+  updated_at : TIMESTAMPTZ
 }
 
-entity "titlesBlocks" as titles <<table>> {
-  id : oid  {auto increment}
-  level : int {1 to 6}
-  content : String
-  created_at : Datetime
-  updated_at : Datetime
+entity "title_blocks" as titles <<table>> {
+  id : BIGSERIAL «PK»
+  block_id : BIGINT
+  level : SMALLINT
+  content : TEXT
+  created_at : TIMESTAMPTZ
+  updated_at : TIMESTAMPTZ
 }
 
-entity "textsBlocks" as texts <<table>> {
-  id : oid  {auto increment}
-  content : String
-  created_at : Datetime
-  updated_at : Datetime
+entity "text_blocks" as texts <<table>> {
+  id : BIGSERIAL «PK»
+  block_id : BIGINT
+  content : TEXT
+  created_at : TIMESTAMPTZ
+  updated_at : TIMESTAMPTZ
 }
 
-entity "codesBlocks" as codes <<table>> {
-  id : oid  {auto increment}
-  content : String
-  created_at : Datetime
-  updated_at : Datetime
+entity "code_blocks" as codes <<table>> {
+  id : BIGSERIAL «PK»
+  block_id : BIGINT
+  language : TEXT
+  content : TEXT
+  created_at : TIMESTAMPTZ
+  updated_at : TIMESTAMPTZ
 }
 
-entity "customsBlocks" as customs <<table>> {
-  id : oid  {auto increment}
-  content : String
-  created_at : Datetime
-  updated_at : Datetime
+entity "custom_blocks" as customs <<table>> {
+  id : BIGSERIAL «PK»
+  block_id : BIGINT
+  payload : JSONB
+  created_at : TIMESTAMPTZ
+  updated_at : TIMESTAMPTZ
 }
 
 entity "experiences" as experiences <<table>> {
-  id : oid  {auto increment}
-  resume : ResumeId
-  job_title : String
-  job_type : String
-  company : String
-  started_date : Datetime
-  ended_date : Datetime
-  location : String
-  location_type : String
-  description : String
-  created_at : Datetime
-  updated_at : Datetime
+  id : BIGSERIAL «PK»
+  resume_id : BIGINT
+  job_title : TEXT
+  job_type : TEXT
+  company : TEXT
+  started_date : DATE
+  ended_date : DATE
+  location : TEXT
+  location_type : TEXT
+  description : TEXT
+  created_at : TIMESTAMPTZ
+  updated_at : TIMESTAMPTZ
 }
 
 entity "educations" as educations <<table>> {
-  id : oid  {auto increment}
-  resume : ResumeId
-  school : String
-  diploma : String
-  study_field : String
-  started_date : Datetime
-  ended_date : Datetime
-  description : String
-  created_at : Datetime
-  updated_at : Datetime
+  id : BIGSERIAL «PK»
+  resume_id : BIGINT
+  school : TEXT
+  diploma : TEXT
+  study_field : TEXT
+  started_date : DATE
+  ended_date : DATE
+  description : TEXT
+  created_at : TIMESTAMPTZ
+  updated_at : TIMESTAMPTZ
 }
 
 entity "skills" as skills <<table>> {
-  id : oid  {auto increment}
-  resume : ResumeId
-  title : String
-  description : String
-  created_at : Datetime
-  updated_at : Datetime
+  id : BIGSERIAL «PK»
+  resume_id : BIGINT
+  title : TEXT
+  description : TEXT
+  created_at : TIMESTAMPTZ
+  updated_at : TIMESTAMPTZ
 }
 
 ' Modules tables
@@ -147,18 +155,25 @@ thyngo --> resumes
 thyngo --> users
 
 ' Blocks contents related tables
-projects --> contents
-posts --> contents
+posts "1" -- "0..*" contents : has_blocks
+projects "1" -- "0..*" contents : has_blocks
 
-contents --> images
-contents --> titles
-contents --> texts
-contents --> codes
-contents --> customs
+contents "1" -- "0..*" images : may_be_image
+contents "1" -- "0..*" titles : may_be_title
+contents "1" -- "0..*" texts : may_be_text
+contents "1" -- "0..*" codes : may_be_code
+contents "1" -- "0..*" customs : may_be_custom
 
 ' Resume related tables
-resumes --> experiences
-resumes --> educations
-resumes --> skills
+resumes "1" -- "0..*" experiences
+resumes "1" -- "0..*" educations
+resumes "1" -- "0..*" skills
+
+' Foreign key hints (diagrammatic)
+users ||--o{ resumes : owns
+resumes ||--o{ experiences : has
+resumes ||--o{ educations : has
+resumes ||--o{ skills : has
+
 
 @enduml

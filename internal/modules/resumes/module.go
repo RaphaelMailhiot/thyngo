@@ -13,7 +13,7 @@ func New() *ResumesModule {
 }
 
 func (m *ResumesModule) Name() string {
-	return "resume"
+	return "resumes"
 }
 
 func (m *ResumesModule) RegisterRoutes(router *gin.RouterGroup) {
