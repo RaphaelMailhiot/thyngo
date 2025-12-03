@@ -7,29 +7,39 @@ services:
       - "8080:8080"
     env_file:
       - .env
+    environment:
+      DOCKER_ENV: "true"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
 
   postgres:
     image: postgres:15
     restart: unless-stopped
+    environment:
+      POSTGRES_USER: thyngo_user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: thyngo_db
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U thyngo_user -d thyngo_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
-  pgadmin:
-    image: dpage/pgadmin4
+  adminer:
+    image: adminer
     restart: unless-stopped
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin
-      PGADMIN_DEFAULT_PASSWORD: admin
     ports:
-      - "8081:8081"
-    volumes:
-      - pgadmin-data:/var/lib/pgadmin
+      - "8081:8080"
     depends_on:
       - postgres
+    environment:
+      ADMINER_DEFAULT_SERVER: postgres
 
 volumes:
   pgdata:

@@ -15,13 +15,16 @@ var pool *pgxpool.Pool
 // Lit la chaîne de connexion depuis l'env `DATABASE_URL`.
 // Retourne une erreur si la connexion ou le test échoue.
 func Connect(ctx context.Context) error {
-	connStr := os.Getenv("DATABASE_URL")
+	connStr := os.Getenv("POSTGRES_URI")
 	if connStr == "" {
-		// valeur par défaut pratique pour dev local
-		connStr = "postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable"
+		// Détecte si on est en Docker ou en local
+		host := "localhost"
+		if os.Getenv("DOCKER_ENV") == "true" {
+			host = "postgres"
+		}
+		connStr = "postgres://thyngo_user:password@" + host + ":5432/thyngo_db?sslmode=disable"
 	}
 
-	// Optionnel : créer un contexte avec timeout pour l'initialisation
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
@@ -30,7 +33,6 @@ func Connect(ctx context.Context) error {
 		return err
 	}
 
-	// simple vérification de santé
 	var one int
 	if err := p.QueryRow(ctx, "SELECT 1").Scan(&one); err != nil {
 		p.Close()

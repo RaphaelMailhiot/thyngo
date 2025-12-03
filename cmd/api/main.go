@@ -6,6 +6,7 @@ import (
 	"os"
 	"thyngo/internal/config"
 	"thyngo/internal/database"
+	"time"
 
 	mediaModule "thyngo/internal/modules/media"
 	postsModule "thyngo/internal/modules/posts"
@@ -17,10 +18,31 @@ import (
 )
 
 func main() {
-	// Connect to PostgreSQL database
-	if err := database.Connect(context.Background()); err != nil {
-		log.Fatalf("failed to connect to database: %v", err)
+	// Connect to PostgreSQL database with retry logic
+	maxRetries := 10
+	retryDelay := 2 * time.Second
+	var err error
+
+	for i := 0; i < maxRetries; i++ {
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		err = database.Connect(ctx)
+		cancel()
+
+		if err == nil {
+			log.Println("Successfully connected to database")
+			break
+		}
+
+		if i < maxRetries-1 {
+			log.Printf("Failed to connect to database (attempt %d/%d): %v. Retrying in %v...", i+1, maxRetries, err, retryDelay)
+			time.Sleep(retryDelay)
+		}
 	}
+
+	if err != nil {
+		log.Fatalf("failed to connect to database after %d attempts: %v", maxRetries, err)
+	}
+
 	// Close connection when main function ends
 	defer func() {
 		_ = database.Close(context.Background())

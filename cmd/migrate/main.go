@@ -9,10 +9,14 @@ import (
 	"strings"
 	"time"
 
+	"github.com/joho/godotenv"
 	"thyngo/internal/database"
 )
 
 func main() {
+	// Charge .env
+	_ = godotenv.Load(".env")
+
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
@@ -28,7 +32,6 @@ func main() {
 		log.Fatal("pgx pool is nil")
 	}
 
-	// Lire modules depuis MIGRATE_MODULES (virgule-séparés). Par défaut posts,users
 	modulesEnv := os.Getenv("MIGRATE_MODULES")
 	var enabled []string
 	if modulesEnv != "" {
@@ -60,7 +63,6 @@ func main() {
 	sort.Strings(files)
 
 	for _, fname := range files {
-		// filtrer par module (si le nom du fichier contient le nom du module)
 		matched := false
 		for _, m := range enabled {
 			if strings.Contains(fname, m) {
