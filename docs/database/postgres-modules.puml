@@ -10,7 +10,6 @@ entity "media" as media <<table>> {
   slug : TEXT «unique»
   title : TEXT
   type : TEXT «movie, series, other»
-  metadata : JSONB
   created_at : TIMESTAMPTZ
   updated_at : TIMESTAMPTZ
 }
@@ -19,7 +18,6 @@ entity "posts" as posts <<table>> {
   id : BIGSERIAL «PK»
   slug : TEXT «unique»
   title : TEXT
-  content_jsonb : JSONB
   created_at : TIMESTAMPTZ
   updated_at : TIMESTAMPTZ
 }
@@ -28,7 +26,6 @@ entity "projects" as projects <<table>> {
   id : BIGSERIAL «PK»
   slug : TEXT «unique»
   title : TEXT
-  content_jsonb : JSONB
   created_at : TIMESTAMPTZ
   updated_at : TIMESTAMPTZ
 }
@@ -57,12 +54,20 @@ entity "users" as users <<table>> {
   updated_at : TIMESTAMPTZ
 }
 
-entity "blocks" as contents <<table>> {
+entity "contents" as contents <<table>> {
   id : BIGSERIAL «PK»
-  parent_table : TEXT
+  parent_table : TEXT «posts, projects»
   parent_id : BIGINT
-  type : TEXT «image,title,text,code,custom»
   ord : INT
+  type : TEXT «image,title,text,code,custom»
+  block_id : BIGINT «FK -> blocks.id»
+  created_at : TIMESTAMPTZ
+  updated_at : TIMESTAMPTZ
+}
+
+entity "blocks" as blocks <<table>> {
+  id : BIGSERIAL «PK»
+  type : TEXT «image,title,text,code,custom»
   created_at : TIMESTAMPTZ
   updated_at : TIMESTAMPTZ
 }
@@ -154,15 +159,18 @@ thyngo --> posts
 thyngo --> resumes
 thyngo --> users
 
-' Blocks contents related tables
-posts "1" -- "0..*" contents : has_blocks
-projects "1" -- "0..*" contents : has_blocks
+' Contents / Blocks relations
+posts "1" -- "0..*" contents : has_contents_blocks
+projects "1" -- "0..*" contents : has_contents_blocks
+contents "1" -- "1" blocks : references_block
+blocks "1" -- "0..*" contents : used_by_contents
 
-contents "1" -- "0..*" images : may_be_image
-contents "1" -- "0..*" titles : may_be_title
-contents "1" -- "0..*" texts : may_be_text
-contents "1" -- "0..*" codes : may_be_code
-contents "1" -- "0..*" customs : may_be_custom
+' Blocks to specific block tables
+blocks "1" -- "0..*" images : has_image_variant
+blocks "1" -- "0..*" titles : has_title_variant
+blocks "1" -- "0..*" texts : has_text_variant
+blocks "1" -- "0..*" codes : has_code_variant
+blocks "1" -- "0..*" customs : has_custom_variant
 
 ' Resume related tables
 resumes "1" -- "0..*" experiences
@@ -174,6 +182,5 @@ users ||--o{ resumes : owns
 resumes ||--o{ experiences : has
 resumes ||--o{ educations : has
 resumes ||--o{ skills : has
-
 
 @enduml

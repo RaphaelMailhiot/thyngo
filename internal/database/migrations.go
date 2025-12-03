@@ -3,17 +3,15 @@ package database
 import (
 	"context"
 	"fmt"
-	"time"
 
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type Migration struct {
 	ID          string
 	Module      string
 	Description string
-	Up          func(ctx context.Context, db *mongo.Database) error
+	Up          func(ctx context.Context, pool *pgxpool.Pool) error
 }
 
 var registry []Migration
@@ -23,11 +21,23 @@ func Register(m Migration) {
 }
 
 // Run applique toutes les migrations non encore appliquées.
-// La collection `migrations` contient des documents avec `_id` = migration ID.
+// La table `migrations` contient les enregistrements avec `id` = migration ID.
 // Si enabledModules est vide, toutes les migrations sont considérées autorisées.
-func Run(ctx context.Context, db *mongo.Database, enabledModules []string) error {
-	if db == nil {
-		return fmt.Errorf("database is nil")
+func Run(ctx context.Context, pool *pgxpool.Pool, enabledModules []string) error {
+	if pool == nil {
+		return fmt.Errorf("postgres pool is nil")
+	}
+
+	// Créer la table de suivi des migrations si elle n'existe pas
+	createTableSQL := `
+		CREATE TABLE IF NOT EXISTS migrations (
+			id TEXT PRIMARY KEY,
+			description TEXT,
+			applied_at TIMESTAMPTZ NOT NULL DEFAULT now()
+		);
+	`
+	if _, err := pool.Exec(ctx, createTableSQL); err != nil {
+		return fmt.Errorf("failed to create migrations table: %w", err)
 	}
 
 	// Construire un set des modules autorisés
@@ -37,25 +47,24 @@ func Run(ctx context.Context, db *mongo.Database, enabledModules []string) error
 		allowed[m] = true
 	}
 
-	col := db.Collection("migrations")
-
 	// Récupère les migrations déjà appliquées
 	applied := map[string]bool{}
-	cursor, err := col.Find(ctx, bson.M{})
+	rows, err := pool.Query(ctx, "SELECT id FROM migrations ORDER BY applied_at")
 	if err != nil {
-		// si la collection n'existe pas encore, Find renverra nil/empty sans erreur dans la plupart des cas
-		return err
+		return fmt.Errorf("failed to query applied migrations: %w", err)
 	}
-	defer cursor.Close(ctx)
+	defer rows.Close()
 
-	for cursor.Next(ctx) {
-		var doc struct {
-			ID string `bson:"_id"`
+	for rows.Next() {
+		var id string
+		if err := rows.Scan(&id); err != nil {
+			return fmt.Errorf("failed to scan migration id: %w", err)
 		}
-		if err := cursor.Decode(&doc); err != nil {
-			return err
-		}
-		applied[doc.ID] = true
+		applied[id] = true
+	}
+
+	if err := rows.Err(); err != nil {
+		return err
 	}
 
 	// Applique les migrations dans l'ordre d'enregistrement
@@ -67,11 +76,11 @@ func Run(ctx context.Context, db *mongo.Database, enabledModules []string) error
 		if applied[m.ID] {
 			continue
 		}
-		if err := m.Up(ctx, db); err != nil {
+		if err := m.Up(ctx, pool); err != nil {
 			return fmt.Errorf("migration %s failed: %w", m.ID, err)
 		}
-		_, err := col.InsertOne(ctx, bson.M{"_id": m.ID, "description": m.Description, "applied_at": time.Now()})
-		if err != nil {
+		insertSQL := `INSERT INTO migrations (id, description) VALUES ($1, $2)`
+		if _, err := pool.Exec(ctx, insertSQL, m.ID, m.Description); err != nil {
 			return fmt.Errorf("recording migration %s failed: %w", m.ID, err)
 		}
 	}

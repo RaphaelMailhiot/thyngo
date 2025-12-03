@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS posts (
+CREATE TABLE IF NOT EXISTS projects (
     id BIGSERIAL PRIMARY KEY,
     slug TEXT NOT NULL UNIQUE,
     title TEXT NOT NULL,
@@ -6,4 +6,4 @@ CREATE TABLE IF NOT EXISTS posts (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
-CREATE UNIQUE INDEX IF NOT EXISTS idx_posts_slug ON posts (slug);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_projects_slug ON projects (slug);
