@@ -12,6 +12,14 @@ import (
 	_ "github.com/jackc/pgx/v5/pgxpool"
 )
 
+type PostStore interface {
+	ListPosts() []Post
+	CreatePost(slug, title, content string) (*Post, error)
+	GetPostBySlug(slug string) *Post
+	UpdatePostBySlug(slug, title, content string) (*Post, error)
+	DeletePostBySlug(slug string) (bool, error)
+}
+
 type pgStore struct {
 	ctxTimeout time.Duration
 }
@@ -32,7 +40,7 @@ func (s *pgStore) ListPosts() []Post {
 		return nil
 	}
 
-	rows, err := pool.Query(ctx, `SELECT slug, title, content::text, created_at, updated_at FROM posts`)
+	rows, err := pool.Query(ctx, `SELECT slug, title, created_at, updated_at FROM posts`)
 	if err != nil {
 		return nil
 	}
@@ -41,7 +49,7 @@ func (s *pgStore) ListPosts() []Post {
 	var out []Post
 	for rows.Next() {
 		var p Post
-		if err := rows.Scan(&p.Slug, &p.Title, &p.Content, &p.CreatedAt, &p.UpdatedAt); err == nil {
+		if err := rows.Scan(&p.Slug, &p.Title, &p.CreatedAt, &p.UpdatedAt); err == nil {
 			out = append(out, p)
 		}
 	}
@@ -57,7 +65,7 @@ func (s *pgStore) CreatePost(slug, title, content string) (*Post, error) {
 	defer cancel()
 
 	now := time.Now()
-	_, err := pool.Exec(ctx, `INSERT INTO posts (slug, title, content, created_at, updated_at) VALUES ($1,$2,$3::jsonb,$4,$5)`, slug, title, content, now, now)
+	_, err := pool.Exec(ctx, `INSERT INTO posts (slug, title, created_at, updated_at) VALUES ($1,$2,$3,$4)`, slug, title, now, now)
 	if err != nil {
 		// unique violation handling
 		var pgErr *pgconn.PgError
@@ -69,7 +77,6 @@ func (s *pgStore) CreatePost(slug, title, content string) (*Post, error) {
 	return &Post{
 		Slug:      slug,
 		Title:     title,
-		Content:   content,
 		CreatedAt: now,
 		UpdatedAt: now,
 	}, nil
@@ -84,8 +91,8 @@ func (s *pgStore) GetPostBySlug(slug string) *Post {
 	defer cancel()
 
 	var p Post
-	err := pool.QueryRow(ctx, `SELECT slug, title, content::text, created_at, updated_at FROM posts WHERE slug=$1`, slug).
-		Scan(&p.Slug, &p.Title, &p.Content, &p.CreatedAt, &p.UpdatedAt)
+	err := pool.QueryRow(ctx, `SELECT slug, title, created_at, updated_at FROM posts WHERE slug=$1`, slug).
+		Scan(&p.Slug, &p.Title, &p.CreatedAt, &p.UpdatedAt)
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			return nil
@@ -104,8 +111,8 @@ func (s *pgStore) UpdatePostBySlug(slug, title, content string) (*Post, error) {
 	defer cancel()
 
 	var p Post
-	err := pool.QueryRow(ctx, `UPDATE posts SET title=$1, content=$2::jsonb, updated_at=now() WHERE slug=$3 RETURNING slug, title, content::text, created_at, updated_at`, title, content, slug).
-		Scan(&p.Slug, &p.Title, &p.Content, &p.CreatedAt, &p.UpdatedAt)
+	err := pool.QueryRow(ctx, `UPDATE posts SET title=$1, updated_at=now() WHERE slug=$2 RETURNING slug, title, created_at, updated_at`, title, slug).
+		Scan(&p.Slug, &p.Title, &p.CreatedAt, &p.UpdatedAt)
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			return nil, nil

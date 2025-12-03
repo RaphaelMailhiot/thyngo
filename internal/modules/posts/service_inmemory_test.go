@@ -27,7 +27,6 @@ func (s *InMemoryStore) CreatePost(slug, title, content string) (*Post, error) {
 	p := Post{
 		Slug:      slug,
 		Title:     title,
-		Content:   content,
 		CreatedAt: now,
 		UpdatedAt: now,
 	}
@@ -55,7 +54,6 @@ func (s *InMemoryStore) UpdatePostBySlug(slug, title, content string) (*Post, er
 	for i := range s.mem {
 		if s.mem[i].Slug == slug {
 			s.mem[i].Title = title
-			s.mem[i].Content = content
 			s.mem[i].UpdatedAt = time.Now()
 			c := s.mem[i]
 			return &c, nil
