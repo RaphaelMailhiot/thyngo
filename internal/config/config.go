@@ -39,7 +39,7 @@ func Load() Config {
 	cfg := Config{
 		Env:            getEnv("APP_ENV", "development"),
 		Port:           getEnv("APP_PORT", "8080"),
-		PostgresURI:    getEnv("MONGO_URI", "postgres://localhost:5432"),
+		PostgresURI:    getEnv("POSTGRES_URI", "postgres://localhost:5432"),
 		JWTSecretKey:   getEnv("JWT_SECRET_KEY", "supersecretkey"),
 		EnableMedia:    getEnvBool("ENABLE_MEDIA", false),
 		EnablePosts:    getEnvBool("ENABLE_POSTS", false),

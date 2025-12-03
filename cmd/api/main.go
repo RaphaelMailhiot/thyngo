@@ -17,9 +17,9 @@ import (
 )
 
 func main() {
-	// Connect to MongoDB
+	// Connect to PostgreSQL database
 	if err := database.Connect(context.Background()); err != nil {
-		log.Fatalf("failed to connect to mongo: %v", err)
+		log.Fatalf("failed to connect to database: %v", err)
 	}
 	// Close connection when main function ends
 	defer func() {

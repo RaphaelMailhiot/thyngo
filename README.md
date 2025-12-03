@@ -1,15 +1,15 @@
 # ThynGo
-**API REST en Go (Gin) — backend modulaire complet avec MongoDB.**
+**API REST en Go (Gin) — backend modulaire complet avec PostgreSQL.**
 
 [![CI/CD Status](https://github.com/RaphaelMailhiot/thyngo/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/RaphaelMailhiot/thyngo/actions/workflows/ci-cd.yml)
 
-ThynGo est une API REST développée en Go et conçue pour offrir une architecture solide, testable et facile à maintenir. L’architecture est organisée en modules clairs (handlers, services, repositories) et le projet est prêt pour un déploiement en production grâce à Docker et GitHub Actions.
+ThynGo est une API REST développée en Go et conçue pour offrir une architecture solide, testable et facile à maintenir. L’architecture est organisée en modules clairs (handlers, module, services, store) et le projet est prêt pour un déploiement en production grâce à Docker et GitHub Actions.
 
 ## ✨ Fonctionnalités principales
 
 - **Endpoints REST complets (CRUD)**
-- **Architecture modulaire et testable** (handlers, services, repositories)
-- **Connexion configurable à MongoDB** via variables d’environnement
+- **Architecture modulaire et testable** (handlers, module, services, store)
+- **Connexion configurable à PostgreSQL** via variables d’environnement
 - **Tests unitaires et intégration continue (CI/CD)** avec GitHub Actions
 - **Conteneurisation** avec Docker & Docker Compose
 
@@ -17,7 +17,7 @@ ThynGo est une API REST développée en Go et conçue pour offrir une architectu
 
 - **Go 1.25+**
 - **Docker & Docker Compose**
-- **MongoDB** (si exécution sans Docker Compose)
+- **PostgreSQL** (si exécution sans Docker Compose)
 
 ## 🚀 Lancer le projet en local
 
@@ -39,7 +39,7 @@ go mod download
 Configurer les variables nécessaires (par exemple) :
 
 - `APP_PORT`
-- `MONGO_URI`
+- `POSTGRES_URI`
 - `etc.`
 
 ### 4. Démarrer l’application
@@ -60,7 +60,7 @@ L’API sera accessible à l’adresse suivante : `http://localhost:8080`
 
 ## 🗃️ Migrations de la base de données
 
-Migrer les schémas de la base de données MongoDB :
+Migrer les schémas de la base de données PostgreSQL :
 
 ```sh
 go run ./cmd/migrate
@@ -78,6 +78,6 @@ go test ./... -v
 
 - **Langage :** Go
 - **Framework web :** Gin
-- **Base de données :** MongoDB
+- **Base de données :** PostgreSQL
 - **Conteneurisation :** Docker
 - **CI/CD :** GitHub Actions
