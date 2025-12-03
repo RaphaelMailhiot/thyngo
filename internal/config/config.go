@@ -8,7 +8,7 @@ import (
 type Config struct {
 	Env            string
 	Port           string
-	MongoURI       string
+	PostgresURI    string
 	JWTSecretKey   string
 	EnableMedia    bool
 	EnablePosts    bool
@@ -39,7 +39,7 @@ func Load() Config {
 	cfg := Config{
 		Env:            getEnv("APP_ENV", "development"),
 		Port:           getEnv("APP_PORT", "8080"),
-		MongoURI:       getEnv("MONGO_URI", "mongodb://localhost:27017"),
+		PostgresURI:    getEnv("MONGO_URI", "postgres://localhost:5432"),
 		JWTSecretKey:   getEnv("JWT_SECRET_KEY", "supersecretkey"),
 		EnableMedia:    getEnvBool("ENABLE_MEDIA", false),
 		EnablePosts:    getEnvBool("ENABLE_POSTS", false),

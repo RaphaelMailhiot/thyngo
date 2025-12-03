@@ -3,6 +3,7 @@ package posts
 import (
 	"context"
 	"errors"
+	"os"
 	"time"
 
 	"thyngo/internal/database"
@@ -25,12 +26,8 @@ type Service struct {
 	ctxTimeout time.Duration
 }
 
-func NewService() *Service {
-	coll := database.Collection("thyngo", "posts")
-	return &Service{
-		coll:       coll,
-		ctxTimeout: 5 * time.Second,
-	}
+func NewService() PostStore {
+	return NewPostgresStore()
 }
 
 func (s *Service) ListPosts() []Post {

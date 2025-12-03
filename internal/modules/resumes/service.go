@@ -1,4 +1,4 @@
-package resume
+package resumes
 
 import (
 	//"context"
@@ -8,8 +8,6 @@ import (
 	//"go.mongodb.org/mongo-driver/bson"
 	//"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
-	//"go.mongodb.org/mongo-driver/mongo/options"
-	"thyngo/internal/database"
 )
 
 type Resume struct {
@@ -34,9 +32,9 @@ type Service struct {
 }
 
 func NewService() *Service {
-	coll := database.Collection("thyngo", "resume")
+	//coll := database.Collection("thyngo", "resumes")
 	return &Service{
-		coll:       coll,
-		ctxTimeout: 5 * time.Second,
+		//coll:       coll,
+		//ctxTimeout: 5 * time.Second,
 	}
 }

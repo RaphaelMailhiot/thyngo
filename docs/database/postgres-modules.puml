@@ -1,44 +1,40 @@
 @startuml
 
-title ThynGo Modules - MongoDB
+title ThynGo Modules - PostgreSQL Database Schema
 
 
 database "thyngo" as thyngo{
 }
 
 entity "media" as media <<table>> {
-  _id : ObjectId
-  --
+  id : oid  {auto increment}
   slug : String
   title : String
-  type : String
+  type : String {movie, series}
   created_at : Datetime
   updated_at : Datetime
 }
 
 entity "posts" as posts <<table>> {
-  _id : ObjectId
-  --
+  id : oid  {auto increment}
   slug : String
   title : String
-  content : Embedded document
+  content : ContentId
   created_at : Datetime
   updated_at : Datetime
 }
 
 entity "projects" as projects <<table>> {
-  _id : ObjectId
-  --
+  id : oid  {auto increment}
   slug : String
   title : String
-  content : Embedded document
+  content : ContentId
   created_at : Datetime
   updated_at : Datetime
 }
 
-entity "resume" as resume <<table>> {
-  _id : ObjectId
-  --
+entity "resumes" as resumes <<table>> {
+  id : oid  {auto increment}
   name : String
   email : String
   phone : String
@@ -46,35 +42,30 @@ entity "resume" as resume <<table>> {
   github : String
   linkedin : String
   website : String
-  experience : Embedded document
-  education : Embedded document
-  skills : Embedded document
   created_at : Datetime
   updated_at : Datetime
 }
 
 entity "users" as users <<table>> {
-  _id : ObjectId
-  --
-  username : String
-  email : String
+  id : oid  {auto increment}
+  username : String {unique}
+  email : String {unique}
+  password : String
   role : String
   created_at : Datetime
   updated_at : Datetime
 }
 
-entity "contents" as contents <<table>> {
-  _id : ObjectId
-  --
-  type : String
-  content : Enbedded document
+entity "blocksContents" as contents <<table>> {
+  id : oid  {auto increment}
+  type : String {ImageBlockId, TitleBlockId, TextBlockId, CodeBlockId, CustomBlockId}
+  order : int
   created_at : Datetime
   updated_at : Datetime
 }
 
-entity "images" as images <<table>> {
-  _id : ObjectId
-  --
+entity "imagesBlocks" as images <<table>> {
+  id : oid  {auto increment}
   type : String
   url : String
   title : String
@@ -82,18 +73,38 @@ entity "images" as images <<table>> {
   updated_at : Datetime
 }
 
-entity "texts" as texts <<table>> {
-  _id : ObjectId
-  --
-  type : String
+entity "titlesBlocks" as titles <<table>> {
+  id : oid  {auto increment}
+  level : int {1 to 6}
+  content : String
+  created_at : Datetime
+  updated_at : Datetime
+}
+
+entity "textsBlocks" as texts <<table>> {
+  id : oid  {auto increment}
+  content : String
+  created_at : Datetime
+  updated_at : Datetime
+}
+
+entity "codesBlocks" as codes <<table>> {
+  id : oid  {auto increment}
+  content : String
+  created_at : Datetime
+  updated_at : Datetime
+}
+
+entity "customsBlocks" as customs <<table>> {
+  id : oid  {auto increment}
   content : String
   created_at : Datetime
   updated_at : Datetime
 }
 
 entity "experiences" as experiences <<table>> {
-  _id : ObjectId
-  --
+  id : oid  {auto increment}
+  resume : ResumeId
   job_title : String
   job_type : String
   company : String
@@ -107,8 +118,8 @@ entity "experiences" as experiences <<table>> {
 }
 
 entity "educations" as educations <<table>> {
-  _id : ObjectId
-  --
+  id : oid  {auto increment}
+  resume : ResumeId
   school : String
   diploma : String
   study_field : String
@@ -120,28 +131,34 @@ entity "educations" as educations <<table>> {
 }
 
 entity "skills" as skills <<table>> {
-  _id : ObjectId
-  --
+  id : oid  {auto increment}
+  resume : ResumeId
   title : String
   description : String
   created_at : Datetime
   updated_at : Datetime
 }
 
-
+' Modules tables
 thyngo --> media
 thyngo --> projects
 thyngo --> posts
-thyngo --> resume
+thyngo --> resumes
 thyngo --> users
 
+' Blocks contents related tables
 projects --> contents
 posts --> contents
-contents --> images
-contents --> texts
 
-resume --> experiences
-resume --> educations
-resume --> skills
+contents --> images
+contents --> titles
+contents --> texts
+contents --> codes
+contents --> customs
+
+' Resume related tables
+resumes --> experiences
+resumes --> educations
+resumes --> skills
 
 @enduml

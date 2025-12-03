@@ -1,22 +1,22 @@
-package resume
+package resumes
 
 import "github.com/gin-gonic/gin"
 
-type ResumeModule struct {
+type ResumesModule struct {
 	service *Service
 }
 
-func New() *ResumeModule {
-	return &ResumeModule{
+func New() *ResumesModule {
+	return &ResumesModule{
 		service: NewService(),
 	}
 }
 
-func (m *ResumeModule) Name() string {
+func (m *ResumesModule) Name() string {
 	return "resume"
 }
 
-func (m *ResumeModule) RegisterRoutes(router *gin.RouterGroup) {
+func (m *ResumesModule) RegisterRoutes(router *gin.RouterGroup) {
 	//router.GET("", m.listResumeHandler)
 	//router.POST("", m.createResumeHandler)
 	//router.PUT("", m.updateResumeHandler)

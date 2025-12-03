@@ -10,7 +10,7 @@ import (
 	mediaModule "thyngo/internal/modules/media"
 	postsModule "thyngo/internal/modules/posts"
 	projetsModule "thyngo/internal/modules/projects"
-	resumeModule "thyngo/internal/modules/resume"
+	resumeModule "thyngo/internal/modules/resumes"
 	usersModule "thyngo/internal/modules/users"
 
 	"thyngo/internal/app"
