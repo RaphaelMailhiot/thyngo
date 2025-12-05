@@ -58,17 +58,19 @@ go run ./cmd/api
 
 Les services seront accessibles aux adresses suivantes :
 
-Traefik : `http://localhost:8080`
+Dashboard : `http://dashboard.localhost`
 API : `http://api.localhost`
+
+Traefik : `http://localhost:8080`
 Adminer : `http://adminer.localhost`
 
 ## 🗃️ Migrations de la base de données
 
-Migrer les schémas de la base de données PostgreSQL :
+Migrer les schémas de la base de données PostgreSQL via Adminer :
 
-```sh
-go run ./cmd/migrate
-```
+Accédez à `http://adminer.localhost` et exécutez manuellement les migrations SQL nécessaires.
+
+**Note :** La commande `go run ./cmd/migrate` sera disponible prochainement.
 
 ## 🧪 Exécuter les tests
 
