@@ -10,6 +10,8 @@ services:
       - "8080:8080"    # dashboard Traefik accessible sur le host:8080
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - thyngo-network
 
   dashboard:
     build:
@@ -38,6 +40,8 @@ services:
       - "traefik.http.routers.dashboard.rule=Host(`dashboard.localhost`)"
       - "traefik.http.routers.dashboard.entrypoints=web"
       - "traefik.http.services.dashboard.loadbalancer.server.port=5173"
+    networks:
+      - thyngo-network
 
   api:
     build:
@@ -51,7 +55,16 @@ services:
       postgres:
         condition: service_healthy
     labels:
+      - "traefik.enable=true"
       - "traefik.http.routers.api.rule=Host(`api.localhost`)"
+      - "traefik.http.routers.api.entrypoints=web"
+      - "traefik.http.services.api.loadbalancer.server.port=8080"
+      - "traefik.http.middlewares.cors-middleware.headers.accesscontrolalloworiginlist=*"
+      - "traefik.http.middlewares.cors-middleware.headers.accesscontrolallowmethods=GET,POST,PUT,DELETE,OPTIONS,PATCH"
+      - "traefik.http.middlewares.cors-middleware.headers.accesscontrolallowheaders=*"
+      - "traefik.http.routers.api.middlewares=cors-middleware"
+    networks:
+      - thyngo-network
 
   postgres:
     image: postgres:15
@@ -70,6 +83,8 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
+    networks:
+      - thyngo-network
 
   adminer:
     image: adminer
@@ -80,6 +95,12 @@ services:
       ADMINER_DEFAULT_SERVER: postgres
     labels:
       - "traefik.http.routers.adminer.rule=Host(`adminer.localhost`)"
+    networks:
+      - thyngo-network
 
 volumes:
   pgdata:
+
+networks:
+  thyngo-network:
+    driver: bridge
