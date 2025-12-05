@@ -11,6 +11,34 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 
+  dashboard:
+    build:
+      context: ./dashboard
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    environment:
+      DOCKER_ENV: "true"
+      VITE_HMR_HOST: "localhost"
+      VITE_HMR_PORT: "5173"
+      CHOKIDAR_USEPOLLING: "true"
+      CHOKIDAR_INTERVAL: "1000"
+    depends_on:
+      - api
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./dashboard/src:/app/src
+      - ./dashboard/public:/app/public
+      - ./dashboard/tsconfig.json:/app/tsconfig.json
+      - ./dashboard/vite.config.ts:/app/vite.config.ts
+      - ./dashboard/index.html:/app/index.html
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dashboard.rule=Host(`dashboard.localhost`)"
+      - "traefik.http.routers.dashboard.entrypoints=web"
+      - "traefik.http.services.dashboard.loadbalancer.server.port=5173"
+
   api:
     build:
       context: .
