@@ -56,7 +56,11 @@ docker compose up --build
 go run ./cmd/api
 ```
 
-L’API sera accessible à l’adresse suivante : `http://localhost:8080`
+Les services seront accessibles aux adresses suivantes :
+
+Traefik : `http://localhost:8080`
+API : `http://api.localhost`
+Adminer : `http://adminer.localhost`
 
 ## 🗃️ Migrations de la base de données
 
