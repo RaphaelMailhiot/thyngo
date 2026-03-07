@@ -1,3 +1,4 @@
+-- +goose Up
 CREATE TABLE IF NOT EXISTS contents (
     id BIGSERIAL PRIMARY KEY,
     parent_table TEXT NOT NULL CHECK (parent_table IN ('posts','projects')),
@@ -12,3 +13,7 @@ CREATE TABLE IF NOT EXISTS contents (
 
 CREATE INDEX IF NOT EXISTS idx_contents_parent ON contents (parent_table, parent_id);
 CREATE INDEX IF NOT EXISTS idx_contents_block_id ON contents (block_id);
+
+-- +goose Down
+-- (no down migration provided)
+

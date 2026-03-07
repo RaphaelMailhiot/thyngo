@@ -1,3 +1,4 @@
+-- +goose Up
 -- Exemple 1 : post avec un title, un text et une image
 BEGIN;
 
@@ -51,7 +52,8 @@ FROM post p
                FROM ins_text
                UNION ALL
                SELECT 2, 'image', block_id
-               FROM ins_image) s ON true;
+               FROM ins_image) s ON true
+ON CONFLICT (parent_table, parent_id, ord) DO NOTHING;
 
 COMMIT;
 
@@ -109,6 +111,11 @@ FROM post p
                FROM ins_code
                UNION ALL
                SELECT 2, 'custom', block_id
-               FROM ins_custom) s ON true;
+               FROM ins_custom) s ON true
+ON CONFLICT (parent_table, parent_id, ord) DO NOTHING;
 
 COMMIT;
+
+-- +goose Down
+-- (no down migration provided)
+

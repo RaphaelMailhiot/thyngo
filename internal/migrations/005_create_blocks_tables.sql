@@ -1,3 +1,4 @@
+-- +goose Up
 CREATE TABLE IF NOT EXISTS blocks (
     id BIGSERIAL PRIMARY KEY,
     type TEXT NOT NULL CHECK (type IN ('image','title','text','code','custom')),
@@ -49,3 +50,7 @@ CREATE TABLE IF NOT EXISTS custom_blocks (
 );
 
 CREATE INDEX IF NOT EXISTS idx_custom_blocks_payload_gin ON custom_blocks USING gin (payload);
+
+-- +goose Down
+-- (no down migration provided)
+

@@ -6,8 +6,8 @@ services:
       - "--providers.docker=true"
       - "--entrypoints.web.address=:80"
     ports:
-      - "80:80"        # trafic HTTP
-      - "8080:8080"    # dashboard Traefik accessible sur le host:8080
+      - "80:80" # trafic HTTP
+      - "8080:8080" # dashboard Traefik accessible sur le host:8080
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
@@ -76,9 +76,9 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "5433:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U thyngo_user -d thyngo_db"]
+      test: [ "CMD-SHELL", "pg_isready -U thyngo_user -d thyngo_db" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -100,6 +100,7 @@ services:
 
 volumes:
   pgdata:
+
 
 networks:
   thyngo-network:

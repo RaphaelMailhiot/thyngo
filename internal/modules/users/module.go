@@ -17,9 +17,6 @@ func (m *UsersModule) Name() string {
 }
 
 func (m *UsersModule) RegisterRoutes(router *gin.RouterGroup) {
-	//router.GET("", m.listProjectsHandler)
-	//router.POST("", m.createProjectsHandler)
-	//router.GET("/:slug", m.getProjectHandler)
-	//router.PUT("/:slug", m.updateProjectHandler)
-	//router.DELETE("/:slug", m.deleteProjectHandler)
+	router.POST("/register", m.registerHandler)
+	router.POST("/login", m.loginHandler)
 }

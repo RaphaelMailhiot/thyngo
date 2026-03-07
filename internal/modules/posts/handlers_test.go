@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	app "thyngo/internal/app"
+	"thyngo/internal/auth"
 
 	"github.com/gin-gonic/gin"
 )
@@ -20,7 +21,8 @@ func setupApp() *app.App {
 	m := New()
 	m.service = NewInMemoryStore()
 	// seed
-	_, _ = m.service.CreatePost("first-post", "First Post", "initial content")
+	var uid int64 = 1
+	_, _ = m.service.CreatePost(&uid, "first-post", "First Post", "public")
 
 	a.RegisterModule(m)
 	a.SetupRoutes()
@@ -59,10 +61,17 @@ func TestCreateGetUpdateDeleteHandlers(t *testing.T) {
 	a := setupApp()
 
 	// Create
-	payload := map[string]string{"slug": "new-post", "title": "New", "content": "body"}
+	payload := map[string]string{"slug": "new-post", "title": "New", "visibility": "public"}
 	b, _ := json.Marshal(payload)
 	req := httptest.NewRequest(http.MethodPost, "/api/posts", bytes.NewBuffer(b))
 	req.Header.Set("Content-Type", "application/json")
+
+	importAuthToken := func() string {
+		token, _ := auth.GenerateToken(1, "admin")
+		return token
+	}
+
+	req.Header.Set("Authorization", "Bearer "+importAuthToken())
 	w := httptest.NewRecorder()
 	a.Engine.ServeHTTP(w, req)
 
@@ -91,10 +100,11 @@ func TestCreateGetUpdateDeleteHandlers(t *testing.T) {
 	}
 
 	// Update
-	upd := map[string]string{"title": "Updated", "content": "updated content"}
+	upd := map[string]string{"title": "Updated", "visibility": "private"}
 	ub, _ := json.Marshal(upd)
 	req = httptest.NewRequest(http.MethodPut, "/api/posts/new-post", bytes.NewBuffer(ub))
 	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "Bearer "+importAuthToken())
 	w = httptest.NewRecorder()
 	a.Engine.ServeHTTP(w, req)
 	if w.Code != http.StatusOK {
@@ -111,6 +121,7 @@ func TestCreateGetUpdateDeleteHandlers(t *testing.T) {
 
 	// Delete
 	req = httptest.NewRequest(http.MethodDelete, "/api/posts/new-post", nil)
+	req.Header.Set("Authorization", "Bearer "+importAuthToken())
 	w = httptest.NewRecorder()
 	a.Engine.ServeHTTP(w, req)
 	if w.Code != http.StatusOK {

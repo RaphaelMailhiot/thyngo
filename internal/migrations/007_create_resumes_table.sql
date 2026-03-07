@@ -1,3 +1,4 @@
+-- +goose Up
 CREATE TABLE IF NOT EXISTS resumes (
     id BIGSERIAL PRIMARY KEY,
     user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -8,6 +9,7 @@ CREATE TABLE IF NOT EXISTS resumes (
     github TEXT,
     linkedin TEXT,
     website TEXT,
+    visibility TEXT NOT NULL DEFAULT 'public' CHECK (visibility IN ('public', 'private', 'shared')),
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
@@ -48,3 +50,7 @@ CREATE TABLE IF NOT EXISTS skills (
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+-- +goose Down
+-- (no down migration provided)
+

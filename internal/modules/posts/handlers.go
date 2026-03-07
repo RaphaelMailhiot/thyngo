@@ -3,6 +3,8 @@ package posts
 import (
 	"net/http"
 
+	"thyngo/internal/middleware"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -16,9 +18,9 @@ func (m *PostsModule) listPostsHandler(c *gin.Context) {
 
 func (m *PostsModule) createPostsHandler(c *gin.Context) {
 	var req struct {
-		Slug    string `json:"slug" binding:"required"`
-		Title   string `json:"title" binding:"required"`
-		Content string `json:"content" binding:"required"`
+		Slug       string `json:"slug" binding:"required"`
+		Title      string `json:"title" binding:"required"`
+		Visibility string `json:"visibility"`
 	}
 
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -29,7 +31,14 @@ func (m *PostsModule) createPostsHandler(c *gin.Context) {
 		return
 	}
 
-	post, err := m.service.CreatePost(req.Slug, req.Title, req.Content)
+	var userID *int64
+	if id, exists := c.Get(middleware.UserIDKey); exists {
+		if uid, ok := id.(int64); ok {
+			userID = &uid
+		}
+	}
+
+	post, err := m.service.CreatePost(userID, req.Slug, req.Title, req.Visibility)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
@@ -46,7 +55,15 @@ func (m *PostsModule) createPostsHandler(c *gin.Context) {
 
 func (m *PostsModule) getPostHandler(c *gin.Context) {
 	slug := c.Param("slug")
-	post := m.service.GetPostBySlug(slug)
+	withContents := c.DefaultQuery("with_contents", "false") == "true"
+
+	var post *Post
+	if withContents {
+		post = m.service.GetPostBySlugWithContents(slug)
+	} else {
+		post = m.service.GetPostBySlug(slug)
+	}
+
 	if post == nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"success": false,
@@ -64,8 +81,8 @@ func (m *PostsModule) getPostHandler(c *gin.Context) {
 func (m *PostsModule) updatePostHandler(c *gin.Context) {
 	slug := c.Param("slug")
 	var req struct {
-		Title   string `json:"title"`
-		Content string `json:"content"`
+		Title      string `json:"title"`
+		Visibility string `json:"visibility"`
 	}
 
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -76,7 +93,7 @@ func (m *PostsModule) updatePostHandler(c *gin.Context) {
 		return
 	}
 
-	post, err := m.service.UpdatePostBySlug(slug, req.Title, req.Content)
+	post, err := m.service.UpdatePostBySlug(slug, req.Title, req.Visibility)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,

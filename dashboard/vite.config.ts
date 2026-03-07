@@ -17,6 +17,16 @@ export default defineConfig({
       port: 5173,
       protocol: 'ws',
     },
+    proxy: {
+      '/api': {
+        target: 'http://api:8080',
+        changeOrigin: true,
+      },
+      '/uploads': {
+        target: 'http://api:8080',
+        changeOrigin: true,
+      }
+    }
   },
 })
 

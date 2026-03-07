@@ -2,6 +2,7 @@ package app
 
 import (
 	"log"
+	"os"
 
 	"github.com/gin-gonic/gin"
 )
@@ -30,6 +31,14 @@ func (a *App) RegisterModule(m Module) {
 }
 
 func (a *App) SetupRoutes() {
+	// Create uploads directory if it doesn't exist
+	if _, err := os.Stat("uploads"); os.IsNotExist(err) {
+		_ = os.Mkdir("uploads", 0755)
+	}
+
+	// Serve uploaded files statically
+	a.Engine.Static("/uploads", "./uploads")
+
 	api := a.Engine.Group("/api")
 
 	for _, m := range a.Modules {

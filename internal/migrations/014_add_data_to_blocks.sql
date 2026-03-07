@@ -1,0 +1,5 @@
+-- +goose Up
+ALTER TABLE blocks ADD COLUMN IF NOT EXISTS data JSONB NOT NULL DEFAULT '{}';
+
+-- +goose Down
+ALTER TABLE blocks DROP COLUMN IF EXISTS data;

@@ -18,11 +18,11 @@ func Connect(ctx context.Context) error {
 	connStr := os.Getenv("POSTGRES_URI")
 	if connStr == "" {
 		// Détecte si on est en Docker ou en local
-		host := "localhost"
+		host := "localhost:5433"
 		if os.Getenv("DOCKER_ENV") == "true" {
-			host = "postgres"
+			host = "postgres:5432"
 		}
-		connStr = "postgres://thyngo_user:password@" + host + ":5432/thyngo_db?sslmode=disable"
+		connStr = "postgres://thyngo_user:password@" + host + "/thyngo_db?sslmode=disable"
 	}
 
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)

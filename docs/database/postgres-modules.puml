@@ -7,25 +7,31 @@ database "thyngo" as thyngo {
 
 entity "media" as media <<table>> {
   id : BIGSERIAL «PK»
+  user_id : BIGINT
   slug : TEXT «unique»
   title : TEXT
   type : TEXT «movie, series, other»
+  visibility : TEXT «public, private, shared»
   created_at : TIMESTAMPTZ
   updated_at : TIMESTAMPTZ
 }
 
 entity "posts" as posts <<table>> {
   id : BIGSERIAL «PK»
+  user_id : BIGINT
   slug : TEXT «unique»
   title : TEXT
+  visibility : TEXT «public, private, shared»
   created_at : TIMESTAMPTZ
   updated_at : TIMESTAMPTZ
 }
 
 entity "projects" as projects <<table>> {
   id : BIGSERIAL «PK»
+  user_id : BIGINT
   slug : TEXT «unique»
   title : TEXT
+  visibility : TEXT «public, private, shared»
   created_at : TIMESTAMPTZ
   updated_at : TIMESTAMPTZ
 }
@@ -40,6 +46,7 @@ entity "resumes" as resumes <<table>> {
   github : TEXT
   linkedin : TEXT
   website : TEXT
+  visibility : TEXT «public, private, shared»
   created_at : TIMESTAMPTZ
   updated_at : TIMESTAMPTZ
 }
@@ -50,6 +57,16 @@ entity "users" as users <<table>> {
   email : TEXT «unique»
   password_hash : TEXT
   role : TEXT
+  created_at : TIMESTAMPTZ
+  updated_at : TIMESTAMPTZ
+}
+
+entity "resource_accesses" as resource_accesses <<table>> {
+  id : BIGSERIAL «PK»
+  user_id : BIGINT «FK -> users.id»
+  resource_type : TEXT «media, posts, projects, resumes»
+  resource_id : BIGINT
+  permission : TEXT «view, edit»
   created_at : TIMESTAMPTZ
   updated_at : TIMESTAMPTZ
 }
@@ -178,7 +195,13 @@ resumes "1" -- "0..*" educations
 resumes "1" -- "0..*" skills
 
 ' Foreign key hints (diagrammatic)
+users ||--o{ media : owns
+users ||--o{ posts : owns
+users ||--o{ projects : owns
 users ||--o{ resumes : owns
+
+users ||--o{ resource_accesses : granted_to
+
 resumes ||--o{ experiences : has
 resumes ||--o{ educations : has
 resumes ||--o{ skills : has

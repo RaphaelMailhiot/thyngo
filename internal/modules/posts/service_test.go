@@ -4,7 +4,8 @@ import "testing"
 
 func TestListPosts(t *testing.T) {
 	s := NewInMemoryStore()
-	_, _ = s.CreatePost("first-post", "First", "content")
+	var uid int64 = 1
+	_, _ = s.CreatePost(&uid, "first-post", "First", "public")
 	posts := s.ListPosts()
 	if len(posts) < 1 {
 		t.Fatalf("expected at least one post, got %d", len(posts))
@@ -15,7 +16,8 @@ func TestGetCreateUpdateDeletePost(t *testing.T) {
 	s := NewInMemoryStore()
 
 	// Create
-	created, err := s.CreatePost("first-post", "First", "content")
+	var uid int64 = 1
+	created, err := s.CreatePost(&uid, "first-post", "First", "public")
 	if err != nil || created == nil {
 		t.Fatalf("create failed: %v", err)
 	}
@@ -36,7 +38,7 @@ func TestGetCreateUpdateDeletePost(t *testing.T) {
 	}
 
 	// Update
-	updated, err := s.UpdatePostBySlug("first-post", "Updated", "new content")
+	updated, err := s.UpdatePostBySlug("first-post", "Updated", "private")
 	if err != nil || updated == nil {
 		t.Fatalf("update failed: %v", err)
 	}

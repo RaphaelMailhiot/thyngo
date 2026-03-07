@@ -43,6 +43,11 @@ func main() {
 		log.Fatalf("failed to connect to database after %d attempts: %v", maxRetries, err)
 	}
 
+	log.Println("Running database migrations...")
+	if err := database.RunMigrations(context.Background(), database.GetPool()); err != nil {
+		log.Fatalf("Failed to run database migrations: %v", err)
+	}
+
 	// Close connection when main function ends
 	defer func() {
 		_ = database.Close(context.Background())

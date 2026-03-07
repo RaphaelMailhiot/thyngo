@@ -1,6 +1,10 @@
 package resumes
 
-import "github.com/gin-gonic/gin"
+import (
+	"thyngo/internal/middleware"
+
+	"github.com/gin-gonic/gin"
+)
 
 type ResumesModule struct {
 	service *Service
@@ -17,8 +21,14 @@ func (m *ResumesModule) Name() string {
 }
 
 func (m *ResumesModule) RegisterRoutes(router *gin.RouterGroup) {
-	//router.GET("", m.listResumeHandler)
-	//router.POST("", m.createResumeHandler)
-	//router.PUT("", m.updateResumeHandler)
-	//router.DELETE("", m.deleteResumeHandler)
+	router.GET("", m.listResumesHandler)
+	router.GET("/:id", m.getResumeHandler)
+
+	protected := router.Group("")
+	protected.Use(middleware.RequireAuth())
+	{
+		protected.POST("", m.createResumeHandler)
+		protected.PUT("/:id", m.updateResumeHandler)
+		protected.DELETE("/:id", m.deleteResumeHandler)
+	}
 }
