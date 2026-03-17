@@ -16,6 +16,9 @@ type Config struct {
 	EnableResumes  bool
 	EnableUsers    bool
 	MediaRoot      string
+	TMDBAPIKey     string
+	TMDBAccessToken string
+	FanartAPIKey   string
 }
 
 func getEnv(key, fallback string) string {
@@ -47,6 +50,9 @@ func Load() Config {
 		EnableResumes:  getEnvBool("ENABLE_RESUMES", false),
 		EnableUsers:    getEnvBool("ENABLE_USERS", false),
 		MediaRoot:      getEnv("MEDIA_ROOT", "./media"),
+		TMDBAPIKey:     getEnv("TMDB_API_KEY", ""),
+		TMDBAccessToken: getEnv("TMDB_ACCESS_TOKEN", ""),
+		FanartAPIKey:   getEnv("FANART_API_KEY", ""),
 	}
 
 	return cfg

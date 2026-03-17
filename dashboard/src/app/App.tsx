@@ -9,6 +9,9 @@ import ProjectList from '../modules/projects/ProjectList';
 import ProjectForm from '../modules/projects/ProjectForm';
 import MediaList from '../modules/media/MediaList';
 import MediaForm from '../modules/media/MediaForm';
+import MovieForm from '../modules/media/MovieForm';
+import SeriesForm from '../modules/media/SeriesForm';
+import MusicForm from '../modules/media/MusicForm';
 import ResumeList from '../modules/resumes/ResumeList';
 import ResumeForm from '../modules/resumes/ResumeForm';
 
@@ -34,6 +37,12 @@ function App() {
                         <Route path="/media" element={<MediaList />} />
                         <Route path="/media/new" element={<MediaForm />} />
                         <Route path="/media/edit/:slug" element={<MediaForm />} />
+                        <Route path="/media/movies/new" element={<MovieForm />} />
+                        <Route path="/media/movies/edit/:id" element={<MovieForm />} />
+                        <Route path="/media/series/new" element={<SeriesForm />} />
+                        <Route path="/media/series/edit/:id" element={<SeriesForm />} />
+                        <Route path="/media/albums/new" element={<MusicForm />} />
+                        <Route path="/media/albums/edit/:id" element={<MusicForm />} />
 
                         <Route path="/resumes" element={<ResumeList />} />
                         <Route path="/resumes/new" element={<ResumeForm />} />

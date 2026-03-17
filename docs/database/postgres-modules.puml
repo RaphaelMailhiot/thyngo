@@ -1,4 +1,4 @@
-@startuml
+@startuml ThynGo_Modules
 
 title ThynGo Modules - PostgreSQL Database Schema
 
@@ -10,8 +10,75 @@ entity "media" as media <<table>> {
   user_id : BIGINT
   slug : TEXT «unique»
   title : TEXT
-  type : TEXT «movie, series, other»
+  type : TEXT «image, video, document, audio, other»
+  url : TEXT
+  file_name : TEXT
+  file_size : BIGINT
+  mime_type : TEXT
   visibility : TEXT «public, private, shared»
+  created_at : TIMESTAMPTZ
+  updated_at : TIMESTAMPTZ
+}
+
+entity "movies" as movies <<table>> {
+  id : BIGSERIAL «PK»
+  user_id : BIGINT
+  media_id : BIGINT «FK -> media.id»
+  title : TEXT
+  description : TEXT
+  release_date : DATE
+  duration : INT «seconds»
+  created_at : TIMESTAMPTZ
+  updated_at : TIMESTAMPTZ
+}
+
+entity "series" as series <<table>> {
+  id : BIGSERIAL «PK»
+  user_id : BIGINT
+  title : TEXT
+  description : TEXT
+  created_at : TIMESTAMPTZ
+  updated_at : TIMESTAMPTZ
+}
+
+entity "seasons" as seasons <<table>> {
+  id : BIGSERIAL «PK»
+  series_id : BIGINT «FK -> series.id»
+  season_number : INT
+  title : TEXT
+  created_at : TIMESTAMPTZ
+  updated_at : TIMESTAMPTZ
+}
+
+entity "episodes" as episodes <<table>> {
+  id : BIGSERIAL «PK»
+  season_id : BIGINT «FK -> seasons.id»
+  media_id : BIGINT «FK -> media.id»
+  episode_number : INT
+  title : TEXT
+  description : TEXT
+  created_at : TIMESTAMPTZ
+  updated_at : TIMESTAMPTZ
+}
+
+entity "music_albums" as music_albums <<table>> {
+  id : BIGSERIAL «PK»
+  user_id : BIGINT
+  title : TEXT
+  artist : TEXT
+  cover_media_id : BIGINT «FK -> media.id»
+  release_date : DATE
+  created_at : TIMESTAMPTZ
+  updated_at : TIMESTAMPTZ
+}
+
+entity "music_tracks" as music_tracks <<table>> {
+  id : BIGSERIAL «PK»
+  album_id : BIGINT «FK -> music_albums.id»
+  media_id : BIGINT «FK -> media.id»
+  title : TEXT
+  track_number : INT
+  duration : INT «seconds»
   created_at : TIMESTAMPTZ
   updated_at : TIMESTAMPTZ
 }
@@ -64,7 +131,7 @@ entity "users" as users <<table>> {
 entity "resource_accesses" as resource_accesses <<table>> {
   id : BIGSERIAL «PK»
   user_id : BIGINT «FK -> users.id»
-  resource_type : TEXT «media, posts, projects, resumes»
+  resource_type : TEXT «media, posts, projects, resumes, movies, series, music_albums»
   resource_id : BIGINT
   permission : TEXT «view, edit»
   created_at : TIMESTAMPTZ
@@ -175,6 +242,9 @@ thyngo --> projects
 thyngo --> posts
 thyngo --> resumes
 thyngo --> users
+thyngo --> movies
+thyngo --> series
+thyngo --> music_albums
 
 ' Contents / Blocks relations
 posts "1" -- "0..*" contents : has_contents_blocks
@@ -194,11 +264,27 @@ resumes "1" -- "0..*" experiences
 resumes "1" -- "0..*" educations
 resumes "1" -- "0..*" skills
 
-' Foreign key hints (diagrammatic)
+
+
+' Cinema relations
+series "1" -- "0..*" seasons
+seasons "1" -- "0..*" episodes
+movies -- media : uses
+episodes -- media : uses
+
+' Music relations
+music_albums "1" -- "0..*" music_tracks
+music_albums -- media : has_cover
+music_tracks -- media : uses
+
+' Ownership
 users ||--o{ media : owns
 users ||--o{ posts : owns
 users ||--o{ projects : owns
 users ||--o{ resumes : owns
+users ||--o{ movies : owns
+users ||--o{ series : owns
+users ||--o{ music_albums : owns
 
 users ||--o{ resource_accesses : granted_to
 
